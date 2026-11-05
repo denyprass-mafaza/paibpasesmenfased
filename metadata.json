@@ -1,0 +1,8 @@
+{
+  "name": "Remix PAIBP FASE D SMART ASASENENT PRO 2026",
+  "description": "Generator Kisi-Kisi, Soal HOTS, Taksonomi Bloom-SOLO, Kartu Soal, Rubrik, dan Analisis Asesmen PAIBP SMP/MTs Fase D",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remix PAIBP FASE D SMART ASASENENT PRO 2026</title>
+    <meta name="description" content="Generator Kisi-Kisi, Soal HOTS, Taksonomi Bloom-SOLO, Kartu Soal, Rubrik, dan Analisis Asesmen PAIBP SMP/MTs Fase D" />
+    <meta property="og:title" content="Remix PAIBP FASE D SMART ASASENENT PRO 2026" />
+    <meta property="og:description" content="Generator Kisi-Kisi, Soal HOTS, Taksonomi Bloom-SOLO, Kartu Soal, Rubrik, dan Analisis Asesmen PAIBP SMP/MTs Fase D" />
+    <script>
+      // In AI Studio preview iframe environment, HMR WebSocket is disabled.
+      // Intercept Vite HMR WebSocket connection to avoid "WebSocket closed without opened" errors.
+      (function() {
+        window.addEventListener('unhandledrejection', function(event) {
+          if (
+            event.reason &&
+            (event.reason.message?.includes('WebSocket') ||
+             event.reason.message?.includes('ws') ||
+             String(event.reason).includes('WebSocket'))
+          ) {
+            event.preventDefault();
+          }
+        });
+
+        const NativeWS = window.WebSocket;
+        if (NativeWS) {
+          window.WebSocket = function(url, protocols) {
+            const urlStr = String(url || '');
+            const isViteHmr =
+              (typeof protocols === 'string' && protocols === 'vite-hmr') ||
+              (Array.isArray(protocols) && protocols.includes('vite-hmr')) ||
+              urlStr.includes(':24678') ||
+              urlStr.includes('vite-ping') ||
+              urlStr.includes('token=');
+
+            if (isViteHmr) {
+              const listeners = {};
+              const dummyWs = {
+                readyState: 1,
+                OPEN: 1,
+                CONNECTING: 0,
+                CLOSING: 2,
+                CLOSED: 3,
+                url: urlStr,
+                protocol: 'vite-hmr',
+                bufferedAmount: 0,
+                extensions: '',
+                binaryType: 'blob',
+                send: function() {},
+                close: function() {},
+                addEventListener: function(type, listener) {
+                  if (!listeners[type]) listeners[type] = [];
+                  listeners[type].push(listener);
+                  if (type === 'open') {
+                    setTimeout(function() {
+                      try { listener({ type: 'open' }); } catch (_) {}
+                    }, 0);
+                  }
+                },
+                removeEventListener: function(type, listener) {
+                  if (listeners[type]) {
+                    listeners[type] = listeners[type].filter(function(l) { return l !== listener; });
+                  }
+                },
+                dispatchEvent: function() { return true; }
+              };
+              return dummyWs;
+            }
+            return new NativeWS(url, protocols);
+          };
+          window.WebSocket.prototype = NativeWS.prototype;
+          window.WebSocket.CONNECTING = NativeWS.CONNECTING;
+          window.WebSocket.OPEN = NativeWS.OPEN;
+          window.WebSocket.CLOSING = NativeWS.CLOSING;
+          window.WebSocket.CLOSED = NativeWS.CLOSED;
+        }
+      })();
+    </script>
+    <meta name="theme-color" content="#059669" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PAIBP 2026" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
