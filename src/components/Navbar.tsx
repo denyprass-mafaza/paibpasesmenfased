@@ -317,9 +317,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }`}>
                           {currentUser.role === 'owner' ? 'Super Admin' : currentUser.role === 'licensed' ? 'Guru Berlisensi' : 'Mode Demo'}
                         </span>
-                        {currentUser.licenseCode && (
+                        {currentUser.role === 'owner' && currentUser.licenseCode && (
                           <span className="text-[10px] font-mono text-emerald-400">
                             {currentUser.licenseCode}
+                          </span>
+                        )}
+                        {currentUser.role === 'licensed' && (
+                          <span className="text-[10px] text-emerald-400 font-medium">
+                            • Lisensi Aktif
                           </span>
                         )}
                       </div>

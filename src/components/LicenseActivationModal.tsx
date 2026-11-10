@@ -9,9 +9,7 @@ import {
   Mail,
   Sparkles,
   ShieldCheck,
-  Clock,
-  Award,
-  Zap
+  Lock
 } from 'lucide-react';
 import { validateLicenseCode, activateLicense } from '../services/licenseService';
 import { UserAccount } from '../types';
@@ -99,18 +97,12 @@ export const LicenseActivationModal: React.FC<LicenseActivationModalProps> = ({
     }
   };
 
-  const sampleCodes = [
-    { code: 'PAI2026-GURU-INDV-7788', title: 'Lisensi Guru Individual (1 Tahun)' },
-    { code: 'PAI2026-SEKOLAH-SMP-9911', title: 'Lisensi Sekolah SMP (5 Guru)' },
-    { code: 'PAI2026-PRO-LIFETIME-001', title: 'Lisensi Pro Lifetime (Akses Selamanya)' }
-  ];
-
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
       <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 text-white shadow-2xl relative max-h-[92vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -147,8 +139,8 @@ export const LicenseActivationModal: React.FC<LicenseActivationModalProps> = ({
           {/* License Code Input */}
           <div>
             <label className="block text-xs font-semibold text-slate-200 mb-1.5 flex items-center justify-between">
-              <span>Kode Lisensi Rahasia</span>
-              <span className="text-[11px] text-slate-400 font-normal">Format: PAI2026-XXXX-XXXX-XXXX</span>
+              <span>Kode Lisensi Aktivasi</span>
+              <span className="text-[11px] text-slate-400 font-normal">Rahasia Guru</span>
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -160,7 +152,7 @@ export const LicenseActivationModal: React.FC<LicenseActivationModalProps> = ({
                     setValidationResult(null);
                     setErrorMessage('');
                   }}
-                  placeholder="Contoh: PAI2026-GURU-INDV-7788"
+                  placeholder="Masukkan kode lisensi resmi dari Owner..."
                   className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white uppercase font-mono tracking-wider focus:outline-hidden focus:border-emerald-500"
                   required
                 />
@@ -169,7 +161,7 @@ export const LicenseActivationModal: React.FC<LicenseActivationModalProps> = ({
                 type="button"
                 onClick={() => handleValidate()}
                 disabled={isValidating || !licenseCode.trim()}
-                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-sky-300 text-xs font-semibold rounded-xl border border-slate-700 transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
+                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-300 text-xs font-semibold rounded-xl border border-slate-700 transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
               >
                 {isValidating ? 'Cek...' : 'Periksa'}
               </button>
@@ -208,32 +200,15 @@ export const LicenseActivationModal: React.FC<LicenseActivationModalProps> = ({
             </div>
           )}
 
-          {/* Quick Sample License Codes for Tester */}
-          <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-2">
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
-              Gunakan Kode Sampel Resmi untuk Uji Coba Langsung:
-            </span>
-            <div className="space-y-1.5">
-              {sampleCodes.map(s => (
-                <button
-                  key={s.code}
-                  type="button"
-                  onClick={() => {
-                    setLicenseCode(s.code);
-                    handleValidate(s.code);
-                  }}
-                  className="w-full text-left p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 transition-colors flex items-center justify-between text-xs cursor-pointer group"
-                >
-                  <div>
-                    <span className="font-mono text-emerald-400 font-bold block">{s.code}</span>
-                    <span className="text-[10px] text-slate-400">{s.title}</span>
-                  </div>
-                  <span className="text-[10px] bg-slate-800 group-hover:bg-emerald-900 text-slate-300 group-hover:text-emerald-200 px-2 py-0.5 rounded border border-slate-700">
-                    Pilih
-                  </span>
-                </button>
-              ))}
+          {/* Security & Official Channel Information (NO sample codes displayed) */}
+          <div className="p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl space-y-1.5 text-xs text-slate-300">
+            <div className="flex items-center gap-1.5 font-semibold text-amber-400">
+              <Lock className="w-3.5 h-3.5" />
+              <span>Kode Lisensi Resmi dari Owner</span>
             </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Kode Lisensi aktivasi diterbitkan dan dikelola secara eksklusif oleh Pemilik (Owner) / Super Admin aplikasi melalui Dashboard Owner. Hubungi koordinator sekolah atau Owner aplikasi untuk mendapatkan kode lisensi Anda.
+            </p>
           </div>
 
           {/* Teacher Info */}

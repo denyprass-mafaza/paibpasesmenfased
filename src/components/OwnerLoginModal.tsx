@@ -15,7 +15,7 @@ export const OwnerLoginModal: React.FC<OwnerLoginModalProps> = ({
   onSuccess
 }) => {
   const [loginMethod, setLoginMethod] = useState<'key' | 'google'>('key');
-  const [secretKey, setSecretKey] = useState<string>('PAIBP-SUPERADMIN-2026');
+  const [secretKey, setSecretKey] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -143,7 +143,7 @@ export const OwnerLoginModal: React.FC<OwnerLoginModalProps> = ({
                 />
               </div>
               <p className="text-[11px] text-slate-400 mt-1">
-                Kunci default master: <code className="text-amber-300 bg-slate-950 px-1 rounded">PAIBP-SUPERADMIN-2026</code>
+                Kunci rahasia master dipegang secara eksklusif oleh Pemilik Aplikasi.
               </p>
             </div>
 
@@ -167,10 +167,10 @@ export const OwnerLoginModal: React.FC<OwnerLoginModalProps> = ({
             <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1.5">
               <p className="font-semibold text-amber-300">Akun Email Owner Terdaftar:</p>
               <p className="font-mono text-white text-[11px] bg-slate-900 p-2 rounded border border-slate-800">
-                denyprass37@gmail.com
+                denyprass38@gmail.com / denyprass37@gmail.com
               </p>
               <p className="text-[11px] text-slate-400">
-                Hanya email Owner resmi yang akan diberikan hak Super Admin untuk mengelola sistem multi-user.
+                Hanya email Owner resmi yang akan diberikan hak Super Admin untuk mengelola sistem dan menerbitkan kode lisensi.
               </p>
             </div>
 

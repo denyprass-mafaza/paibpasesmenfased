@@ -45,7 +45,8 @@ try {
 }
 
 // Master Admin Security Configurations
-const OWNER_EMAIL = 'denyprass37@gmail.com';
+const OWNER_EMAILS = ['denyprass37@gmail.com', 'denyprass38@gmail.com'];
+const OWNER_EMAIL = 'denyprass38@gmail.com';
 const OWNER_SECRET_KEY = process.env.OWNER_SECRET_KEY || 'PAIBP-SUPERADMIN-2026';
 const activeOwnerTokens = new Set<string>();
 
@@ -212,7 +213,7 @@ function isAuthorizedOwner(req: express.Request): boolean {
 app.post('/api/auth/owner-login', async (req, res) => {
   try {
     const { email, secretKey } = req.body;
-    const isEmailOwner = email && email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+    const isEmailOwner = email && OWNER_EMAILS.includes(email.toLowerCase().trim());
     const isKeyValid = secretKey && secretKey === OWNER_SECRET_KEY;
 
     if (!isEmailOwner && !isKeyValid) {
