@@ -15,12 +15,15 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
-  writeBatch
+  writeBatch,
+  query,
+  where
 } from 'firebase/firestore';
 
 import { generateLocalAssessment } from './src/services/assessmentGenerator';
 import { generateProceduralQuestion } from './src/services/proceduralAssessmentEngine';
 import { CP_THEMES_CLASSIFICATION } from './src/data/cpThemesData';
+import { OFFICIAL_SEED_LICENSES } from './src/data/seedLicenses';
 
 dotenv.config();
 
@@ -100,77 +103,46 @@ const usersMap = new Map<string, any>();
 const auditLogs: any[] = [];
 
 // Seed Initial Working Licenses so system is ready to use immediately
-function seedInitialData() {
-  const seedLicenses: ServerLicense[] = [
-    {
-      id: 'lic-seed-001',
-      code: 'PAI2026-GURU-INDV-7788',
-      codeHash: crypto.createHash('sha256').update('PAI2026-GURU-INDV-7788').digest('hex'),
-      packageName: 'Lisensi Guru Individual (1 Tahun)',
-      packageType: 'individual',
-      status: 'active',
-      maxActivations: 1,
-      currentActivations: 0,
-      activations: [],
-      durationDays: 365,
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: new Date().toISOString(),
-      createdBy: OWNER_EMAIL,
-      internalNote: 'Lisensi Guru Mandiri Fase D (Kelas 7, 8, 9)'
-    },
-    {
-      id: 'lic-seed-002',
-      code: 'PAI2026-SEKOLAH-SMP-9911',
-      codeHash: crypto.createHash('sha256').update('PAI2026-SEKOLAH-SMP-9911').digest('hex'),
-      packageName: 'Lisensi Sekolah / Lembaga SMP (5 Guru)',
-      packageType: 'institution',
-      status: 'active',
-      maxActivations: 5,
-      currentActivations: 0,
-      activations: [],
-      durationDays: 365,
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: new Date().toISOString(),
-      createdBy: OWNER_EMAIL,
-      internalNote: 'Paket Kolektif MGMP / Sekolah SMP Fase D'
-    },
-    {
-      id: 'lic-seed-003',
-      code: 'PAI2026-PRO-LIFETIME-001',
-      codeHash: crypto.createHash('sha256').update('PAI2026-PRO-LIFETIME-001').digest('hex'),
-      packageName: 'Lisensi Pro Lifetime PAI 2026',
-      packageType: 'custom',
-      status: 'active',
-      maxActivations: 10,
-      currentActivations: 0,
-      activations: [],
-      durationDays: 0,
-      expiresAt: null,
-      createdAt: new Date().toISOString(),
-      createdBy: OWNER_EMAIL,
-      internalNote: 'Lisensi Akses Penuh Selamanya (Lifetime)'
-    },
-    {
-      id: 'lic-seed-004',
-      code: 'PAI2026-TRIAL-30D-5522',
-      codeHash: crypto.createHash('sha256').update('PAI2026-TRIAL-30D-5522').digest('hex'),
-      packageName: 'Lisensi Uji Coba Guru (30 Hari)',
-      packageType: 'period',
-      status: 'active',
-      maxActivations: 1,
-      currentActivations: 0,
-      activations: [],
-      durationDays: 30,
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: new Date().toISOString(),
-      createdBy: OWNER_EMAIL,
-      internalNote: 'Paket Evaluasi Pengawas / Guru 30 Hari'
-    }
-  ];
-
-  seedLicenses.forEach(lic => {
-    licensesMap.set(lic.code, lic);
+async function seedInitialData() {
+  OFFICIAL_SEED_LICENSES.forEach(s => {
+    const lic: ServerLicense = {
+      id: s.id,
+      code: s.code,
+      codeHash: crypto.createHash('sha256').update(s.code).digest('hex'),
+      packageName: s.packageName,
+      packageType: s.packageType as any,
+      status: s.status,
+      maxActivations: s.maxActivations,
+      currentActivations: s.currentActivations || 0,
+      activations: s.activations || [],
+      durationDays: s.durationDays,
+      expiresAt: s.expiresAt,
+      createdAt: s.createdAt,
+      createdBy: s.createdBy,
+      internalNote: s.internalNote || ''
+    };
+    licensesMap.set(s.code, lic);
   });
+
+  // Automatically write/sync official seed licenses into Firestore if db connection exists
+  if (db) {
+    try {
+      for (const lic of licensesMap.values()) {
+        const docRef = doc(db, 'licenses', lic.id);
+        const snap = await getDoc(docRef);
+        if (!snap.exists()) {
+          await setDoc(docRef, lic);
+          console.log('[Firestore] Synced seed license to Cloud:', lic.code);
+        } else {
+          // If exists in Cloud, update local cache with cloud state
+          const cloudData = snap.data() as ServerLicense;
+          licensesMap.set(cloudData.code, { ...lic, ...cloudData });
+        }
+      }
+    } catch (err) {
+      console.warn('[Firestore] Sync seed licenses notice:', err);
+    }
+  }
 }
 seedInitialData();
 
@@ -281,7 +253,45 @@ app.post('/api/license/validate', async (req, res) => {
     }
 
     const cleanCode = code.trim().toUpperCase();
-    const lic = licensesMap.get(cleanCode);
+    let lic = licensesMap.get(cleanCode);
+
+    // If not in memory, query Firestore
+    if (!lic && db) {
+      try {
+        const q = query(collection(db, 'licenses'), where('code', '==', cleanCode));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          lic = snap.docs[0].data() as ServerLicense;
+          licensesMap.set(cleanCode, lic);
+        }
+      } catch (err) {
+        console.warn('[Firestore] Query license validate notice:', err);
+      }
+    }
+
+    // If still not found, check OFFICIAL_SEED_LICENSES
+    if (!lic) {
+      const seed = OFFICIAL_SEED_LICENSES.find(s => s.code === cleanCode);
+      if (seed) {
+        lic = {
+          id: seed.id,
+          code: seed.code,
+          codeHash: crypto.createHash('sha256').update(seed.code).digest('hex'),
+          packageName: seed.packageName,
+          packageType: seed.packageType as any,
+          status: seed.status,
+          maxActivations: seed.maxActivations,
+          currentActivations: 0,
+          activations: [],
+          durationDays: seed.durationDays,
+          expiresAt: seed.expiresAt,
+          createdAt: seed.createdAt,
+          createdBy: seed.createdBy,
+          internalNote: seed.internalNote || ''
+        };
+        licensesMap.set(cleanCode, lic);
+      }
+    }
 
     if (!lic) {
       return res.status(404).json({
@@ -344,7 +354,45 @@ app.post('/api/license/activate', async (req, res) => {
     }
 
     const cleanCode = code.trim().toUpperCase();
-    const lic = licensesMap.get(cleanCode);
+    let lic = licensesMap.get(cleanCode);
+
+    // If not in memory, query Firestore
+    if (!lic && db) {
+      try {
+        const q = query(collection(db, 'licenses'), where('code', '==', cleanCode));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          lic = snap.docs[0].data() as ServerLicense;
+          licensesMap.set(cleanCode, lic);
+        }
+      } catch (err) {
+        console.warn('[Firestore] Query license activate notice:', err);
+      }
+    }
+
+    // If still not in memory, check OFFICIAL_SEED_LICENSES
+    if (!lic) {
+      const seed = OFFICIAL_SEED_LICENSES.find(s => s.code === cleanCode);
+      if (seed) {
+        lic = {
+          id: seed.id,
+          code: seed.code,
+          codeHash: crypto.createHash('sha256').update(seed.code).digest('hex'),
+          packageName: seed.packageName,
+          packageType: seed.packageType as any,
+          status: seed.status,
+          maxActivations: seed.maxActivations,
+          currentActivations: 0,
+          activations: [],
+          durationDays: seed.durationDays,
+          expiresAt: seed.expiresAt,
+          createdAt: seed.createdAt,
+          createdBy: seed.createdBy,
+          internalNote: seed.internalNote || ''
+        };
+        licensesMap.set(cleanCode, lic);
+      }
+    }
 
     if (!lic) {
       return res.status(404).json({ success: false, message: 'Kode lisensi tidak valid.' });

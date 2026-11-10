@@ -7,9 +7,13 @@ import {
   AuditLog
 } from '../types';
 import { getOwnerToken, setUserSession } from './authService';
+import { OFFICIAL_SEED_LICENSES } from '../data/seedLicenses';
+import { db } from './firebase';
+import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
 
 /**
- * Validasi kode lisensi di server tanpa mengaktifkannya
+ * Validasi kode lisensi (Server API -> Firestore Cloud -> Official Seed Fallback)
+ * Bekerja 100% mulus baik di AI Studio, Vercel Serverless, maupun Static Hosting.
  */
 export async function validateLicenseCode(code: string): Promise<{
   valid: boolean;
@@ -25,20 +29,82 @@ export async function validateLicenseCode(code: string): Promise<{
     expiresAt: string | null;
   };
 }> {
+  const cleanCode = code.trim().toUpperCase();
+
+  // 1. Coba hubungi API server terlebih dahulu (jika backend Express aktif)
   try {
     const res = await fetch('/api/license/validate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: code.trim().toUpperCase() })
+      body: JSON.stringify({ code: cleanCode })
     });
-    return await res.json();
-  } catch (error: any) {
-    return { valid: false, message: error.message || 'Gagal menghubungi server validasi lisensi' };
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
+      const data = await res.json();
+      if (data && data.valid) {
+        return data;
+      }
+    }
+  } catch {
+    // API backend tidak terjangkau (misalnya static deployment di Vercel/GitHub Pages)
   }
+
+  // 2. Cek langsung ke Cloud Firestore (jika dideploy di Vercel tanpa Node backend)
+  try {
+    if (db) {
+      const q = query(collection(db, 'licenses'), where('code', '==', cleanCode));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const licDoc = snap.docs[0].data() as any;
+        if (licDoc.status === 'active') {
+          return {
+            valid: true,
+            license: {
+              id: snap.docs[0].id,
+              code: licDoc.code,
+              packageName: licDoc.packageName,
+              packageType: licDoc.packageType,
+              durationDays: licDoc.durationDays,
+              maxActivations: licDoc.maxActivations || 100,
+              currentActivations: licDoc.currentActivations || 0,
+              expiresAt: licDoc.expiresAt || null
+            }
+          };
+        } else {
+          return { valid: false, message: `Status lisensi tidak aktif (${licDoc.status}).` };
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[Firestore] Direct license check notice:', err);
+  }
+
+  // 3. Fallback ke Daftar Kode Resmi Seed Terintegrasi
+  const matchedSeed = OFFICIAL_SEED_LICENSES.find(l => l.code === cleanCode);
+  if (matchedSeed && matchedSeed.status === 'active') {
+    return {
+      valid: true,
+      license: {
+        id: matchedSeed.id,
+        code: matchedSeed.code,
+        packageName: matchedSeed.packageName,
+        packageType: matchedSeed.packageType,
+        durationDays: matchedSeed.durationDays,
+        maxActivations: matchedSeed.maxActivations,
+        currentActivations: matchedSeed.currentActivations,
+        expiresAt: matchedSeed.expiresAt
+      }
+    };
+  }
+
+  return {
+    valid: false,
+    message: 'Kode lisensi tidak valid atau belum terdaftar. Pastikan kode diketik dengan huruf kapital sesuai format resmi.'
+  };
 }
 
 /**
- * Aktivasi kode lisensi untuk guru
+ * Aktivasi kode lisensi untuk guru (Server API -> Firestore Cloud -> Local Fallback)
  */
 export async function activateLicense(payload: {
   code: string;
@@ -50,25 +116,83 @@ export async function activateLicense(payload: {
   message?: string;
   user?: UserAccount;
 }> {
+  const cleanCode = payload.code.trim().toUpperCase();
+
+  // 1. Coba aktivasi lewat Server API
   try {
     const res = await fetch('/api/license/activate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        code: payload.code.trim().toUpperCase(),
+        code: cleanCode,
         name: payload.name.trim(),
         email: payload.email.trim(),
         schoolName: payload.schoolName.trim()
       })
     });
-    const data = await res.json();
-    if (data.success && data.user) {
-      setUserSession(data.user);
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
+      const data = await res.json();
+      if (data.success && data.user) {
+        setUserSession(data.user);
+        return data;
+      }
     }
-    return data;
-  } catch (error: any) {
-    return { success: false, message: error.message || 'Gagal melakukan aktivasi lisensi' };
+  } catch {
+    // API backend tidak terjangkau (misal static deployment di Vercel)
   }
+
+  // 2. Validasi & Aktivasi Mandiri (Vercel & Offline Standalone Fallback)
+  const validation = await validateLicenseCode(cleanCode);
+  if (!validation.valid || !validation.license) {
+    return {
+      success: false,
+      message: validation.message || 'Kode lisensi tidak valid.'
+    };
+  }
+
+  const lic = validation.license;
+  const userId = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  const userEmail = payload.email.trim() || `guru_${Math.random().toString(36).substring(2, 6)}@sekolah.id`;
+
+  let userExpiresAt: string | null = lic.expiresAt;
+  if (lic.durationDays > 0) {
+    userExpiresAt = new Date(Date.now() + lic.durationDays * 24 * 60 * 60 * 1000).toISOString();
+  }
+
+  const userAccount: UserAccount = {
+    uid: userId,
+    email: userEmail,
+    displayName: payload.name.trim(),
+    role: 'licensed',
+    status: 'active',
+    schoolName: payload.schoolName.trim() || 'SMP / MTs',
+    licenseId: lic.id,
+    licenseCode: lic.code,
+    packageName: lic.packageName,
+    packageType: lic.packageType,
+    expiresAt: userExpiresAt,
+    createdAt: new Date().toISOString(),
+    lastLoginAt: new Date().toISOString(),
+    workspaceId: `workspace_${userId}`
+  };
+
+  // Simpan ke Firestore jika koneksi Cloud tersedia
+  if (db) {
+    try {
+      await setDoc(doc(db, 'users', userId), userAccount, { merge: true });
+    } catch (err) {
+      console.warn('[Firestore] Notice during offline/standalone activation:', err);
+    }
+  }
+
+  setUserSession(userAccount);
+
+  return {
+    success: true,
+    message: `Selamat datang, ${payload.name}! Lisensi '${lic.packageName}' berhasil diaktifkan.`,
+    user: userAccount
+  };
 }
 
 /**
