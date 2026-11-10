@@ -3,19 +3,12 @@ import {
   Key,
   Sparkles,
   ShieldCheck,
-  BookOpen,
   CheckCircle2,
-  Award,
-  Layers,
   Laptop,
   FileCheck,
   Brain,
-  Zap,
   ArrowRight,
   HelpCircle,
-  School,
-  Lock,
-  ChevronRight,
   ChevronDown,
   Info
 } from 'lucide-react';
@@ -37,26 +30,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [showFaq, setShowFaq] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-sm">
+      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo & Brand */}
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-linear-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-emerald-950/50">
+            <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-xs">
               P
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-black text-sm tracking-tight text-white leading-none">
+                <span className="font-bold text-sm tracking-tight text-white leading-none">
                   PAIBP FASE D
                 </span>
-                <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded tracking-wider border border-emerald-500/30 uppercase">
-                  SMART LEARNING PRO 2026
+                <span className="bg-emerald-950 text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded border border-emerald-800/60 uppercase tracking-wider">
+                  Kurikulum Merdeka 2026
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 hidden sm:block mt-0.5">
-                SMP/MTs Fase D (Kelas VII, VIII, IX) • Kurikulum Merdeka
+                SMP/MTs Fase D (Kelas VII, VIII, IX)
               </p>
             </div>
           </div>
@@ -67,193 +60,180 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             <button
               onClick={onOpenGuide}
-              className="text-slate-300 hover:text-white px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="text-slate-300 hover:text-white px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer"
             >
-              <HelpCircle className="w-3.5 h-3.5 text-sky-400" />
-              <span className="hidden sm:inline">Petunjuk Penggunaan</span>
+              <HelpCircle className="w-3.5 h-3.5 text-slate-400" />
+              <span className="hidden sm:inline">Panduan</span>
             </button>
 
             <button
               onClick={onEnterAsOwner}
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-amber-950/60 hover:bg-amber-900 text-amber-300 hover:text-white border border-amber-500/30 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-amber-950/60 hover:bg-amber-900 text-amber-300 hover:text-white border border-amber-600/40 text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
               title="Portal Khusus Pemilik Aplikasi / Super Admin"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">Portal Owner</span>
-              <span className="sm:hidden">Owner</span>
+              <span>Portal Owner</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-16 md:pb-24 border-b border-slate-800/80 bg-linear-to-b from-slate-900 via-slate-950 to-slate-950">
-        {/* Ambient background glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          {/* Header Badges */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-emerald-500/40 text-emerald-300 text-xs font-semibold mb-6 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Platform Multi-User Terintegrasi Standar Keputusan No. 020 Tahun 2026</span>
+      <section className="relative pt-12 pb-16 md:pt-20 md:pb-24 border-b border-slate-800/80 bg-slate-950">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Subtle Tag */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs font-medium mb-6">
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Standar Asesmen SK BSKAP No. 020 Tahun 2026</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight max-w-4xl mx-auto">
-            PAIBP FASE D <br />
-            <span className="bg-linear-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
-              SMART LEARNING PRO 2026
+          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight max-w-4xl mx-auto">
+            Sistem Pembuat Asesmen PAIBP <br />
+            <span className="text-emerald-400">
+              SMP/MTs Fase D Terstandar
             </span>
           </h1>
 
-          <p className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Aplikasi Pembuat Soal dan Asesmen Pendidikan Agama Islam dan Budi Pekerti SMP Fase D (Kelas VII, VIII, IX). Dirancang untuk guru profesional dengan standar HOTS C4–C6, Taksonomi SOLO, Deep Learning, CBT Langsung, dan Buku Nilai 3 Ranah per Rombel A, B, C, D.
+          <p className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
+            Platform asesmen komprehensif untuk guru Pendidikan Agama Islam dan Budi Pekerti (Kelas VII, VIII, IX). Mendukung penalaran HOTS C4–C6, Taksonomi SOLO, Ujian CBT Langsung, serta Buku Nilai 3 Ranah capaian.
           </p>
 
           {/* Primary Action Buttons */}
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-xl mx-auto">
-            {/* CTA 1: Masuk Dengan Kode Lisensi */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+            {/* CTA 1: Masuk Dengan Lisensi */}
             <button
               onClick={onEnterWithLicense}
-              className="w-full sm:w-auto px-7 py-4 bg-linear-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm rounded-2xl shadow-xl shadow-emerald-950/60 transition-all flex items-center justify-center gap-2.5 cursor-pointer transform hover:-translate-y-0.5"
+              className="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Key className="w-5 h-5 text-emerald-200" />
-              <span>MASUK DENGAN KODE LISENSI</span>
-              <ArrowRight className="w-4 h-4 text-emerald-200" />
+              <Key className="w-4 h-4" />
+              <span>Masuk Dengan Kode Lisensi</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
 
             {/* CTA 2: Coba Demo Gratis */}
             <button
               onClick={onEnterAsDemo}
-              className="w-full sm:w-auto px-6 py-4 bg-slate-900 hover:bg-slate-850 text-sky-300 hover:text-white font-bold text-sm rounded-2xl border border-sky-500/40 transition-all flex items-center justify-center gap-2.5 cursor-pointer shadow-md"
+              className="w-full sm:w-auto px-5 py-3 bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-xs sm:text-sm rounded-xl border border-slate-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Sparkles className="w-5 h-5 text-sky-400" />
-              <span>COBA DEMO GRATIS</span>
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span>Coba Demo Gratis</span>
             </button>
-
-            {/* CTA 3: PWA Offline Install */}
-            <PWAInstallButton variant="hero" />
           </div>
 
-          <p className="mt-4 text-xs text-slate-400">
-            Akses fitur lengkap dan penyimpanan permanen memerlukan lisensi resmi dari Owner.
+          <p className="mt-3 text-xs text-slate-500">
+            Penyimpanan permanen dan paket ujian lengkap memerlukan kode lisensi resmi guru.
           </p>
 
           {/* Value Props 4-Card Grid */}
           <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
-            <div className="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-2xl hover:border-emerald-500/40 transition-colors">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
-                <Brain className="w-5 h-5" />
+            <div className="bg-slate-900/60 border border-slate-800/80 p-4 rounded-xl">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 flex items-center justify-center mb-3">
+                <Brain className="w-4 h-4" />
               </div>
-              <h3 className="text-sm font-bold text-white mb-1">HOTS & Deep Learning</h3>
+              <h3 className="text-sm font-semibold text-white mb-1">HOTS & Deep Learning</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Penalaran kognitif C4–C6, Taksonomi SOLO Relational, dan stimulus kontekstual etika digital siswa.
+                Penalaran kognitif C4–C6, Taksonomi SOLO Relational, dan stimulus kontekstual nyata.
               </p>
             </div>
 
-            <div className="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-2xl hover:border-emerald-500/40 transition-colors">
-              <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-3">
-                <Laptop className="w-5 h-5" />
+            <div className="bg-slate-900/60 border border-slate-800/80 p-4 rounded-xl">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 flex items-center justify-center mb-3">
+                <Laptop className="w-4 h-4" />
               </div>
-              <h3 className="text-sm font-bold text-white mb-1">Ujian CBT Anti-Curang</h3>
+              <h3 className="text-sm font-semibold text-white mb-1">Ujian CBT Terintegrasi</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Langsung diuji ke siswa dengan deteksi buka tab lain, batas waktu, pengacakan opsi, dan token ujian.
+                Langsung diuji ke siswa dengan batas waktu, pengacakan opsi, token ujian, dan link share.
               </p>
             </div>
 
-            <div className="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-2xl hover:border-emerald-500/40 transition-colors">
-              <div className="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center mb-3">
-                <FileCheck className="w-5 h-5" />
+            <div className="bg-slate-900/60 border border-slate-800/80 p-4 rounded-xl">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 flex items-center justify-center mb-3">
+                <FileCheck className="w-4 h-4" />
               </div>
-              <h3 className="text-sm font-bold text-white mb-1">Buku Nilai (Rombel A–D)</h3>
+              <h3 className="text-sm font-semibold text-white mb-1">Buku Nilai (3 Ranah)</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Rekap 3 ranah capaian (Kognitif, Afektif, Psikomotorik) per Tujuan Pembelajaran tersimpan di cloud.
+                Rekap capaian Kognitif, Afektif, dan Psikomotorik per Tujuan Pembelajaran di Cloud Firestore.
               </p>
             </div>
 
-            <div className="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-2xl hover:border-emerald-500/40 transition-colors">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3">
-                <ShieldCheck className="w-5 h-5" />
+            <div className="bg-slate-900/60 border border-slate-800/80 p-4 rounded-xl">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 flex items-center justify-center mb-3">
+                <ShieldCheck className="w-4 h-4" />
               </div>
-              <h3 className="text-sm font-bold text-white mb-1">Ruang Kerja Multi-User</h3>
+              <h3 className="text-sm font-semibold text-white mb-1">Ruang Kerja Mandiri</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Isolasi data tiap guru secara mandiri, data tidak tertukar, aman dan dapat diakses bersamaan.
+                Data setiap guru terisolasi secara mandiri, data tidak tertukar, aman dan tersinkronisasi.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Feature Comparison Matrix (Demo vs Licensed vs Owner) */}
-      <section className="py-12 bg-slate-950 border-b border-slate-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Feature Comparison Matrix */}
+      <section className="py-12 bg-slate-950 border-b border-slate-800/80">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold text-white">
-              Perbandingan Paket & Hak Akses Pengguna
+            <h2 className="text-xl font-bold text-white">
+              Perbandingan Hak Akses
             </h2>
             <p className="text-xs text-slate-400 mt-1">
-              Transparan, aman, dan dapat disesuaikan oleh Owner aplikasi sesuai kebutuhan sekolah.
+              Transparan, aman, dan siap digunakan untuk kebutuhan sekolah.
             </p>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-950 text-slate-300 border-b border-slate-800 text-[11px] font-bold">
+                <thead className="bg-slate-950 text-slate-300 border-b border-slate-800 text-[11px] font-semibold">
                   <tr>
                     <th className="py-3 px-4">Fitur Sistem</th>
-                    <th className="py-3 px-4 text-center bg-slate-900/60 text-slate-300">
-                      Pengguna Demo
+                    <th className="py-3 px-4 text-center text-slate-400">
+                      Mode Demo
                     </th>
-                    <th className="py-3 px-4 text-center bg-emerald-950/40 text-emerald-300">
+                    <th className="py-3 px-4 text-center text-emerald-400 bg-emerald-950/20">
                       Guru Berlisensi
                     </th>
-                    <th className="py-3 px-4 text-center bg-amber-950/40 text-amber-300">
+                    <th className="py-3 px-4 text-center text-amber-400">
                       Owner / Super Admin
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60 text-slate-300">
                   <tr>
-                    <td className="py-3 px-4 font-semibold text-white">Akses Generator Soal PAIBP</td>
-                    <td className="py-3 px-4 text-center text-slate-400">Maks 5 soal / generasi</td>
-                    <td className="py-3 px-4 text-center font-bold text-emerald-400">Tak Terbatas (10-50 Soal)</td>
+                    <td className="py-3 px-4 font-medium text-white">Akses Generator Soal PAIBP</td>
+                    <td className="py-3 px-4 text-center text-slate-400">Maks 5 soal / sesi</td>
+                    <td className="py-3 px-4 text-center font-bold text-emerald-400">Tak Terbatas (10–50 Soal)</td>
                     <td className="py-3 px-4 text-center font-bold text-amber-400">Penuh</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-semibold text-white">Materi & Elemen Fase D</td>
+                    <td className="py-3 px-4 font-medium text-white">Materi & Elemen Fase D</td>
                     <td className="py-3 px-4 text-center text-slate-400">Contoh Terpilih</td>
                     <td className="py-3 px-4 text-center font-bold text-emerald-400">Semua Kelas (VII, VIII, IX)</td>
                     <td className="py-3 px-4 text-center font-bold text-amber-400">Penuh</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-semibold text-white">Ujian CBT Langsung & Anti-Curang</td>
-                    <td className="py-3 px-4 text-center text-slate-400">Pratinjau Simulasi</td>
-                    <td className="py-3 px-4 text-center font-bold text-emerald-400">Aktif Penuh (Rombel A–D)</td>
+                    <td className="py-3 px-4 font-medium text-white">Ujian CBT Langsung & Link Siswa</td>
+                    <td className="py-3 px-4 text-center text-slate-400">Pratinjau</td>
+                    <td className="py-3 px-4 text-center font-bold text-emerald-400">Aktif Penuh</td>
                     <td className="py-3 px-4 text-center font-bold text-amber-400">Penuh</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-semibold text-white">Buku Nilai (3 Ranah Capaian)</td>
-                    <td className="py-3 px-4 text-center text-slate-400">Tampilan Contoh</td>
-                    <td className="py-3 px-4 text-center font-bold text-emerald-400">Import & Simpan Database</td>
+                    <td className="py-3 px-4 font-medium text-white">Buku Nilai (3 Ranah Capaian)</td>
+                    <td className="py-3 px-4 text-center text-slate-400">Pratinjau</td>
+                    <td className="py-3 px-4 text-center font-bold text-emerald-400">Simpan Cloud Database</td>
                     <td className="py-3 px-4 text-center font-bold text-amber-400">Penuh</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-semibold text-white">Ekspor PDF, DOCX, & Google Form</td>
+                    <td className="py-3 px-4 font-medium text-white">Ekspor Word, PDF, & Google Form</td>
                     <td className="py-3 px-4 text-center text-slate-400">Dibatasi</td>
                     <td className="py-3 px-4 text-center font-bold text-emerald-400">Bebas Unduh Lengkap</td>
                     <td className="py-3 px-4 text-center font-bold text-amber-400">Penuh</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-semibold text-white">Penerbitan Kode Lisensi</td>
+                    <td className="py-3 px-4 font-medium text-white">Penerbitan Kode Lisensi</td>
                     <td className="py-3 px-4 text-center text-slate-500">—</td>
                     <td className="py-3 px-4 text-center text-slate-500">—</td>
                     <td className="py-3 px-4 text-center font-bold text-amber-400">Owner Tunggal</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-semibold text-white">Manajemen Pengguna & Konfigurasi</td>
-                    <td className="py-3 px-4 text-center text-slate-500">—</td>
-                    <td className="py-3 px-4 text-center text-slate-500">—</td>
-                    <td className="py-3 px-4 text-center font-bold text-amber-400">Kontrol Penuh</td>
                   </tr>
                 </tbody>
               </table>
@@ -262,13 +242,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </section>
 
-      {/* FAQ & Guide Section */}
-      <section className="py-12 bg-slate-900/50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Info className="w-4 h-4 text-sky-400" />
-              <span>Petunjuk Singkat Penggunaan & Aktivasi</span>
+      {/* FAQ Section */}
+      <section className="py-12 bg-slate-900/40">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <Info className="w-4 h-4 text-emerald-400" />
+              <span>Informasi Aktivasi & Lisensi</span>
             </h3>
             <button
               onClick={() => setShowFaq(!showFaq)}
@@ -280,8 +260,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="space-y-3 text-xs">
-            <div className="p-4 bg-slate-900 rounded-xl border border-slate-800">
-              <h4 className="font-bold text-white mb-1">Bagaimana cara mendapatkan Kode Lisensi?</h4>
+            <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-800">
+              <h4 className="font-semibold text-white mb-1">Bagaimana cara mendapatkan Kode Lisensi?</h4>
               <p className="text-slate-400 leading-relaxed">
                 Kode Lisensi diterbitkan secara resmi oleh Owner / Super Admin aplikasi. Anda dapat meminta kode lisensi melalui koordinator MGMP PAIBP atau pimpinan madrasah/sekolah Anda.
               </p>
@@ -289,17 +269,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {showFaq && (
               <>
-                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 animate-fadeIn">
-                  <h4 className="font-bold text-white mb-1">Apakah hasil kerja saya akan hilang jika lisensi kedaluwarsa?</h4>
+                <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-800">
+                  <h4 className="font-semibold text-white mb-1">Apakah data asesmen saya tersimpan aman?</h4>
                   <p className="text-slate-400 leading-relaxed">
-                    Tidak. Seluruh bank soal, hasil ujian CBT, dan buku nilai siswa yang telah tersimpan di cloud database tetap aman tersimpan dan tidak akan dihapus. Anda hanya perlu memperpanjang kode lisensi untuk melanjutkan fitur penambahan asesmen baru.
+                    Ya. Seluruh bank soal, hasil CBT, dan buku nilai siswa tersimpan aman di Cloud Firestore dan di-cache secara otomatis di browser sehingga dapat dibuka kembali secara offline.
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 animate-fadeIn">
-                  <h4 className="font-bold text-white mb-1">Bagaimana isolasi data antar-guru bekerja?</h4>
+                <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-800">
+                  <h4 className="font-semibold text-white mb-1">Bagaimana isolasi data antar-guru bekerja?</h4>
                   <p className="text-slate-400 leading-relaxed">
-                    Setiap guru yang mengaktifkan kode lisensi memiliki Workspace ID unik. Soal dan nilai yang Anda simpan tidak dapat dibaca, diedit, atau dihapus oleh guru lain meskipun berasal dari sekolah yang sama.
+                    Setiap guru yang mengaktifkan kode lisensi memiliki Workspace ID unik. Soal dan nilai yang Anda simpan tidak dapat dibaca atau diedit oleh guru lain.
                   </p>
                 </div>
               </>
@@ -316,11 +296,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               PAIBP FASE D SMART LEARNING PRO 2026
             </p>
             <p className="text-[11px] text-slate-500">
-              Pendidikan Agama Islam dan Budi Pekerti • SMP/MTs Fase D (Kelas 7, 8, 9)
+              Pendidikan Agama Islam dan Budi Pekerti • SMP/MTs (Kelas 7, 8, 9)
             </p>
           </div>
           <div className="text-[11px] text-slate-500">
-            Hak Cipta Terpelihara © 2026 • Arsitektur Multi-User Terproteksi
+            Hak Cipta Terpelihara © 2026 • Kurikulum Merdeka
           </div>
         </div>
       </footer>

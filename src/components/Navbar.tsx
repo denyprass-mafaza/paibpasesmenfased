@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   BookOpen,
   Sparkles,
   HelpCircle,
-  FileText,
-  CheckCircle2,
   Award,
-  ExternalLink,
   X,
   ShieldCheck,
   FileCheck,
   Laptop,
   Database,
-  Cloud,
   Key,
   LogOut,
   User,
   ChevronDown,
-  Share2
+  Share2,
+  Menu,
+  MoreHorizontal,
+  Compass,
+  CheckCircle2
 } from 'lucide-react';
 import { UserAccount } from '../types';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -47,7 +47,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenHolisticAssessment,
   onOpenDirectCbt,
   onOpenShareCbt,
-  activeMode,
   currentUser,
   onOpenActivation,
   onOpenOwnerDashboard,
@@ -55,183 +54,250 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [showAbout, setShowAbout] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showToolsMenu, setShowToolsMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  const toolsMenuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (toolsMenuRef.current && !toolsMenuRef.current.contains(target)) {
+        setShowToolsMenu(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(target)) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 text-white shadow-sm">
+    <header className="sticky top-0 z-40 bg-slate-900 border-b border-slate-800/90 text-white shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Brand */}
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-sm">
+          
+          {/* Brand & Identity */}
+          <div className="flex items-center space-x-3 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-xs shrink-0">
               P
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-base tracking-tight text-white leading-none">PAIBP GEN</span>
-                <span className="bg-sky-500/20 text-sky-300 text-[10px] font-bold px-2 py-0.5 rounded tracking-wider border border-sky-400/30 uppercase">
-                  Deep Learning 2026
+                <span className="font-bold text-sm tracking-tight text-white leading-none">
+                  PAIBP GEN
+                </span>
+                <span className="text-[10px] font-medium text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/60 uppercase tracking-wider">
+                  Fase D 2026
                 </span>
                 {currentUser?.role === 'owner' && (
-                  <span className="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/40 uppercase">
-                    Owner Mode
+                  <span className="bg-amber-950 text-amber-300 text-[10px] font-semibold px-1.5 py-0.5 rounded border border-amber-700/50 uppercase">
+                    Owner
                   </span>
                 )}
                 {currentUser?.role === 'demo' && (
-                  <span className="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/40 uppercase">
+                  <span className="bg-amber-950/80 text-amber-300 text-[10px] font-medium px-1.5 py-0.5 rounded border border-amber-800/50 uppercase">
                     Demo
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block mt-0.5">
-                SMP/MTs Fase D (Kelas VII, VIII, IX) • Bloom C1–C6 & SOLO Relational
+              <p className="text-[11px] text-slate-400 hidden sm:block truncate mt-0.5">
+                SMP/MTs (Kelas VII, VIII, IX) • Kurikulum Merdeka
               </p>
             </div>
           </div>
 
-          {/* Quick Badges & Actions */}
-          <div className="flex items-center space-x-2 sm:space-x-2.5">
-            {onOpenShareCbt && (
-              <button
-                id="btn-nav-share-cbt"
-                onClick={onOpenShareCbt}
-                className="px-2.5 sm:px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md border border-emerald-400/50 transition-colors flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer"
-                title="Bagikan link ujian CBT ke siswa via WhatsApp / Tautan online valid"
-              >
-                <Share2 className="w-3.5 h-3.5 text-emerald-200" />
-                <span>Bagikan Link CBT</span>
-              </button>
-            )}
-
-            {onOpenDirectCbt && (
-              <button
-                id="btn-nav-direct-cbt"
-                onClick={onOpenDirectCbt}
-                className="px-2.5 sm:px-3 py-1.5 bg-linear-to-r from-purple-900 to-indigo-900 hover:from-purple-800 hover:to-indigo-800 text-purple-200 hover:text-white rounded-md border border-purple-500/50 transition-colors flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer"
-                title="Buka Ujian CBT Langsung (Computer-Based Test) untuk siswa"
-              >
-                <Laptop className="w-3.5 h-3.5 text-purple-300" />
-                <span>Ujian CBT Langsung</span>
-              </button>
-            )}
-
+          {/* Desktop Navigation Tools */}
+          <div className="hidden lg:flex items-center space-x-1.5">
+            {/* Primary Action 1: Buku Nilai */}
             {onOpenGrading && (
               <button
                 id="btn-nav-grading"
                 onClick={onOpenGrading}
-                className="px-2.5 sm:px-3 py-1.5 bg-linear-to-r from-emerald-950 to-teal-950 hover:from-emerald-900 hover:to-teal-900 text-emerald-300 hover:text-white rounded-md border border-emerald-500/50 transition-colors flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer"
-                title="Buku Penilaian Lengkap: Kognitif, Afektif, dan Psikomotorik per Tujuan Pembelajaran"
+                className="px-3 py-1.5 rounded-lg text-slate-200 hover:text-white hover:bg-slate-800 border border-slate-700/70 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
+                title="Buku Penilaian: Kognitif, Afektif, dan Psikomotorik per TP"
               >
                 <FileCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Buku Nilai (3 Ranah)</span>
               </button>
             )}
 
-            {onOpenGrading && (
+            {/* Primary Action 2: Ujian CBT Langsung */}
+            {onOpenDirectCbt && (
               <button
-                onClick={onOpenGrading}
-                className="hidden lg:flex px-2 py-1.5 bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 rounded-md border border-emerald-500/30 transition-colors items-center gap-1.5 text-xs font-semibold cursor-pointer"
-                title="Cloud Database Firestore Terhubung: Data Siswa (NIS, Nama, Kelas) & Rekap Nilai Tersimpan Permanen"
+                id="btn-nav-direct-cbt"
+                onClick={onOpenDirectCbt}
+                className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                title="Buka Ujian CBT Langsung (Computer-Based Test) untuk siswa"
               >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <Database className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Cloud DB Aktif</span>
+                <Laptop className="w-3.5 h-3.5" />
+                <span>Ujian CBT</span>
               </button>
             )}
 
-            {onOpenHolisticAssessment && (
-              <button
-                id="btn-nav-holistic-rubric"
-                onClick={onOpenHolisticAssessment}
-                className="hidden sm:flex px-2.5 sm:px-3 py-1.5 bg-sky-950/90 hover:bg-sky-900 text-sky-300 hover:text-white rounded-md border border-sky-500/40 transition-colors items-center gap-1.5 text-xs font-semibold"
-                title="Panduan & Rubrik Asesmen PAIBP: 3 Ranah, 5 Elemen, dan 4 Pendekatan Kurikulum Merdeka (P5PPRA)"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-                <span>Rubrik Asesmen & P5PPRA</span>
-              </button>
-            )}
-
+            {/* Primary Action 3: Bank Soal */}
             {onOpenQuestionBank && (
               <button
                 id="btn-nav-question-bank"
                 onClick={onOpenQuestionBank}
-                className="px-2.5 sm:px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 text-indigo-300 hover:text-white rounded-md border border-indigo-500/40 transition-colors flex items-center gap-1.5 text-xs font-semibold"
-                title="Bank Soal Terstandar PAIBP SMP/MTs"
+                className="px-3 py-1.5 rounded-lg text-slate-200 hover:text-white hover:bg-slate-800 border border-slate-700/70 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
+                title="Bank Soal Terstandar PAIBP Fase D"
               >
-                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+                <BookOpen className="w-3.5 h-3.5 text-sky-400" />
                 <span>Bank Soal</span>
               </button>
             )}
 
-            {onOpenCbtConverter && (
+            {/* Secondary Tools Dropdown */}
+            <div className="relative" ref={toolsMenuRef}>
               <button
-                id="btn-nav-cbt-converter"
-                onClick={onOpenCbtConverter}
-                className="px-2.5 sm:px-3 py-1.5 bg-purple-950/80 hover:bg-purple-900 text-purple-300 hover:text-white rounded-md border border-purple-500/40 transition-colors flex items-center gap-1.5 text-xs font-semibold"
-                title="Converter Soal ke Google Form & CBT"
+                id="btn-nav-tools-dropdown"
+                onClick={() => setShowToolsMenu(!showToolsMenu)}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1 cursor-pointer border ${
+                  showToolsMenu
+                    ? 'bg-slate-800 text-white border-slate-600'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800 border-slate-700/70'
+                }`}
+                title="Menu alat asesmen lainnya"
               >
-                <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                <span className="hidden sm:inline">Converter</span> Form & CBT
+                <MoreHorizontal className="w-4 h-4 text-slate-400" />
+                <span>Alat Asesmen</span>
+                <ChevronDown className="w-3 h-3 text-slate-400" />
               </button>
-            )}
 
-            {onOpenCatalog && (
-              <button
-                id="btn-nav-catalog"
-                onClick={onOpenCatalog}
-                className="hidden md:flex px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 hover:text-white rounded-md border border-sky-500/30 transition-colors items-center gap-1.5 text-xs font-semibold"
-                title="Katalog Tema CP PAIBP 2026"
-              >
-                <BookOpen className="w-3.5 h-3.5 text-sky-400" />
-                <span>Katalog Tema CP</span>
-              </button>
-            )}
+              {showToolsMenu && (
+                <div className="absolute left-0 mt-2 w-64 bg-slate-900 border border-slate-700/90 rounded-xl shadow-xl p-1.5 text-xs space-y-0.5 z-50">
+                  {onOpenShareCbt && (
+                    <button
+                      id="btn-dropdown-share-cbt"
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenShareCbt();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:text-white hover:bg-slate-800 flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <Share2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <div>
+                        <div className="font-medium">Bagikan Link CBT Siswa</div>
+                        <div className="text-[10px] text-slate-400">Tautan online siswa via WhatsApp</div>
+                      </div>
+                    </button>
+                  )}
 
-            <button
-              id="btn-nav-pedoman"
-              onClick={() => setShowAbout(true)}
-              className="px-3 py-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-md border border-slate-700/60 transition-colors flex items-center gap-1.5 text-xs font-medium"
-              title="Pedoman Standar 2026"
+                  {onOpenCbtConverter && (
+                    <button
+                      id="btn-dropdown-cbt-converter"
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenCbtConverter();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:text-white hover:bg-slate-800 flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <Sparkles className="w-4 h-4 text-purple-400 shrink-0" />
+                      <div>
+                        <div className="font-medium">Converter Form & CBT</div>
+                        <div className="text-[10px] text-slate-400">Ekspor ke Google Form & Quizizz</div>
+                      </div>
+                    </button>
+                  )}
+
+                  {onOpenHolisticAssessment && (
+                    <button
+                      id="btn-dropdown-holistic"
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenHolisticAssessment();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:text-white hover:bg-slate-800 flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-sky-400 shrink-0" />
+                      <div>
+                        <div className="font-medium">Rubrik Asesmen & P5PPRA</div>
+                        <div className="text-[10px] text-slate-400">3 Ranah Capaian & Karakter</div>
+                      </div>
+                    </button>
+                  )}
+
+                  {onOpenCatalog && (
+                    <button
+                      id="btn-dropdown-catalog"
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenCatalog();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:text-white hover:bg-slate-800 flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <Compass className="w-4 h-4 text-amber-400 shrink-0" />
+                      <div>
+                        <div className="font-medium">Katalog Tema CP (SK 020)</div>
+                        <div className="text-[10px] text-slate-400">Daftar tema resmi per elemen</div>
+                      </div>
+                    </button>
+                  )}
+
+                  <div className="border-t border-slate-800 my-1" />
+
+                  <button
+                    id="btn-dropdown-about"
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      setShowAbout(true);
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:text-white hover:bg-slate-800 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <Award className="w-4 h-4 text-teal-400 shrink-0" />
+                    <div>
+                      <div className="font-medium">Prinsip Asesmen 2026</div>
+                      <div className="text-[10px] text-slate-400">Kaidah opsi homogen & HOTS</div>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Header Area (Guide, Cloud Status, PWA, User Profile) */}
+          <div className="flex items-center space-x-2">
+            {/* Cloud Status Indicator */}
+            <div
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800/80 border border-slate-700/60 text-[11px] text-slate-300"
+              title="Cloud Database Firestore Terhubung"
             >
-              <Award className="w-3.5 h-3.5 text-sky-400" />
-              <span className="hidden sm:inline">Prinsip Sistem</span>
-            </button>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+              <span className="font-medium text-slate-300">Cloud Aktif</span>
+            </div>
 
+            {/* Guide Button */}
             <button
               id="btn-nav-panduan"
               onClick={onOpenGuide}
-              className="bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-md font-medium text-xs sm:text-sm transition-all flex items-center gap-1.5 shadow-sm"
+              className="text-slate-300 hover:text-white hover:bg-slate-800 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-700/70 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
             >
-              <HelpCircle className="w-4 h-4" />
-              <span>Panduan Guru</span>
+              <HelpCircle className="w-3.5 h-3.5 text-slate-400" />
+              <span className="hidden md:inline">Panduan</span>
             </button>
 
-            {/* In-App PWA Offline Install Button */}
+            {/* PWA Install Button */}
             <PWAInstallButton />
 
             {/* User Account / Role Menu */}
             {currentUser && (
-              <div className="relative">
+              <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className={`px-2.5 py-1.5 rounded-md border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    currentUser.role === 'owner'
-                      ? 'bg-amber-950/80 text-amber-300 border-amber-500/40 hover:bg-amber-900'
-                      : currentUser.role === 'licensed'
-                      ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40 hover:bg-emerald-900'
-                      : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-750'
-                  }`}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-700/80 bg-slate-800 text-xs font-medium text-slate-200 hover:text-white hover:bg-slate-750 transition-colors flex items-center gap-1.5 cursor-pointer"
                   title="Menu Akun & Lisensi"
                 >
                   {currentUser.role === 'owner' ? (
                     <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
                   ) : (
-                    <User className="w-3.5 h-3.5" />
+                    <User className="w-3.5 h-3.5 text-slate-400" />
                   )}
                   <span className="max-w-[100px] truncate hidden md:inline">
-                    {currentUser.displayName}
+                    {currentUser.displayName || 'Pengguna'}
                   </span>
                   <ChevronDown className="w-3 h-3 text-slate-400" />
                 </button>
@@ -242,17 +308,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <p className="font-bold text-white truncate">{currentUser.displayName}</p>
                       <p className="text-[11px] text-slate-400 truncate">{currentUser.email || currentUser.schoolName}</p>
                       <div className="mt-1 flex items-center gap-1.5">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded uppercase ${
                           currentUser.role === 'owner'
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            ? 'bg-amber-950 text-amber-300 border border-amber-800'
                             : currentUser.role === 'licensed'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                            : 'bg-slate-800 text-slate-400'
+                            ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                            : 'bg-slate-800 text-slate-300 border border-slate-700'
                         }`}>
                           {currentUser.role === 'owner' ? 'Super Admin' : currentUser.role === 'licensed' ? 'Guru Berlisensi' : 'Mode Demo'}
                         </span>
                         {currentUser.licenseCode && (
-                          <span className="text-[10px] font-mono text-amber-400">
+                          <span className="text-[10px] font-mono text-emerald-400">
                             {currentUser.licenseCode}
                           </span>
                         )}
@@ -262,7 +328,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {currentUser.role === 'owner' && onOpenOwnerDashboard && (
                       <button
                         onClick={() => { setShowUserMenu(false); onOpenOwnerDashboard(); }}
-                        className="w-full text-left px-2.5 py-1.5 rounded-lg bg-amber-950/60 hover:bg-amber-900 text-amber-200 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                        className="w-full text-left px-2.5 py-1.5 rounded-lg bg-amber-950/60 hover:bg-amber-900 text-amber-200 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer"
                       >
                         <ShieldCheck className="w-4 h-4 text-amber-400" />
                         <span>Buka Dashboard Owner</span>
@@ -272,7 +338,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {currentUser.role === 'demo' && onOpenActivation && (
                       <button
                         onClick={() => { setShowUserMenu(false); onOpenActivation(); }}
-                        className="w-full text-left px-2.5 py-1.5 rounded-lg bg-emerald-950/60 hover:bg-emerald-900 text-emerald-200 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                        className="w-full text-left px-2.5 py-1.5 rounded-lg bg-emerald-950/60 hover:bg-emerald-900 text-emerald-200 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer"
                       >
                         <Key className="w-4 h-4 text-emerald-400" />
                         <span>Aktivasi Kode Lisensi</span>
@@ -292,8 +358,100 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </div>
             )}
+
+            {/* Mobile Menu Hamburger */}
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="lg:hidden p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700/70"
+              title="Buka menu navigasi"
+            >
+              {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer */}
+        {showMobileMenu && (
+          <div className="lg:hidden py-3 border-t border-slate-800 space-y-1 text-xs">
+            {onOpenGrading && (
+              <button
+                onClick={() => { setShowMobileMenu(false); onOpenGrading(); }}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-slate-200"
+              >
+                <FileCheck className="w-4 h-4 text-emerald-400" />
+                <span>Buku Nilai (3 Ranah)</span>
+              </button>
+            )}
+
+            {onOpenDirectCbt && (
+              <button
+                onClick={() => { setShowMobileMenu(false); onOpenDirectCbt(); }}
+                className="w-full text-left px-3 py-2 rounded-lg bg-emerald-600 text-white font-medium flex items-center gap-2"
+              >
+                <Laptop className="w-4 h-4" />
+                <span>Ujian CBT Langsung</span>
+              </button>
+            )}
+
+            {onOpenQuestionBank && (
+              <button
+                onClick={() => { setShowMobileMenu(false); onOpenQuestionBank(); }}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-slate-200"
+              >
+                <BookOpen className="w-4 h-4 text-sky-400" />
+                <span>Bank Soal (Fase D)</span>
+              </button>
+            )}
+
+            {onOpenShareCbt && (
+              <button
+                onClick={() => { setShowMobileMenu(false); onOpenShareCbt(); }}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-slate-200"
+              >
+                <Share2 className="w-4 h-4 text-emerald-400" />
+                <span>Bagikan Link CBT Siswa</span>
+              </button>
+            )}
+
+            {onOpenCbtConverter && (
+              <button
+                onClick={() => { setShowMobileMenu(false); onOpenCbtConverter(); }}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-slate-200"
+              >
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                <span>Converter Form & CBT</span>
+              </button>
+            )}
+
+            {onOpenHolisticAssessment && (
+              <button
+                onClick={() => { setShowMobileMenu(false); onOpenHolisticAssessment(); }}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-slate-200"
+              >
+                <ShieldCheck className="w-4 h-4 text-sky-400" />
+                <span>Rubrik Asesmen & P5PPRA</span>
+              </button>
+            )}
+
+            {onOpenCatalog && (
+              <button
+                onClick={() => { setShowMobileMenu(false); onOpenCatalog(); }}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-slate-200"
+              >
+                <Compass className="w-4 h-4 text-amber-400" />
+                <span>Katalog Tema CP PAIBP</span>
+              </button>
+            )}
+
+            <button
+              onClick={() => { setShowMobileMenu(false); setShowAbout(true); }}
+              className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-slate-200"
+            >
+              <Award className="w-4 h-4 text-teal-400" />
+              <span>Prinsip Asesmen 2026</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* About Modal */}
@@ -303,13 +461,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="btn-close-about-modal"
               onClick={() => setShowAbout(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-1.5 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 rounded bg-sky-500 text-white flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">
                 P
               </div>
               <div>
@@ -320,19 +478,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <div className="space-y-4 text-xs text-slate-300">
               <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                <h4 className="font-bold text-sky-400 mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                <h4 className="font-bold text-emerald-400 mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   Hierarki Kualitas Berpikir (Higher Order Thinking)
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
                   <div className="bg-slate-900 p-2.5 rounded border border-slate-700/80">
-                    <span className="text-sky-300 font-bold block mb-0.5">Deep Understanding</span> &gt; Hafalan Rutin
+                    <span className="text-emerald-300 font-bold block mb-0.5">Deep Understanding</span> &gt; Hafalan Rutin
                   </div>
                   <div className="bg-slate-900 p-2.5 rounded border border-slate-700/80">
-                    <span className="text-sky-300 font-bold block mb-0.5">Reasoning</span> &gt; Recall
+                    <span className="text-emerald-300 font-bold block mb-0.5">Reasoning</span> &gt; Recall
                   </div>
                   <div className="bg-slate-900 p-2.5 rounded border border-slate-700/80">
-                    <span className="text-sky-300 font-bold block mb-0.5">Application</span> &gt; Definition
+                    <span className="text-emerald-300 font-bold block mb-0.5">Application</span> &gt; Definition
                   </div>
                   <div className="bg-slate-900 p-2.5 rounded border border-slate-700/80">
                     <span className="text-emerald-300 font-bold block mb-0.5">Analysis</span> &gt; Recognition
@@ -361,7 +519,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 id="btn-close-about-modal-footer"
                 onClick={() => setShowAbout(false)}
-                className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md text-xs font-semibold transition-colors"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
               >
                 Tutup Pedoman
               </button>
